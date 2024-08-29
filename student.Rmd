@@ -1,0 +1,630 @@
+---
+title: "Statistical Analysis"
+author: "Azka Faheem"
+date: "2024-08-16"
+output:
+  pdf_document: default
+  html_document:
+    highlight: zenburn
+    theme: journal
+---
+
+# INTRODUCTION
+This dataset provides a detailed overview of student performance in various schools, focusing on academic achievements and demographic factors. It includes critical information such as student IDs, gender, age, grade levels, and scores in key subjects like mathematics, reading, and writing. Additionally, it captures attendance records, offering insights into how presence in school correlates with academic success.
+# Importing Dataset
+```{r}
+library(readr)
+
+student_performance_data <- read_csv("C:/Users/pc/OneDrive/Desktop/Programming/Rypdc_r_session_2024/ypdc_r_session/student_performance_data.csv")
+
+View(student_performance_data)
+```
+## Renaming and reading Dataset
+```{r}
+df<-student_performance_data
+head(df)
+tail(df)
+```
+
+# Preprocessing Dataset
+```{r}
+str(df)
+```
+The unique feature helps to observe uniqueness in different variables.
+```{r}
+unique(df$Gender)
+unique(df$Age)
+unique(df$GPA)
+unique(df$ExtraCurricularActivities)
+unique(df$PartTimeJob)
+unique(df$Major)
+```
+
+```{r}
+# To check the empty cells/missing values in dataset
+colSums(is.na(df))
+```
+
+```{r}
+# Checking duplicate values in the dataset
+sum(duplicated(df))
+```
+# Descriptive Statistics
+In Descriptive statistics, we study Summary Statistics, Measures of Dispersion, Frequency distribution, Shape of distribution, Visualization of data, Correlation, & Normality Tests.
+## Summary statistics
+```{r}
+library(psych)
+describe(df)
+```
+In this, the mean, median ,mode, 1st quartile, 3rd quartile, standard deviation, variance, skewness, kurtosis etc of dataset is described. 
+```{r}
+library(tidyverse)
+summary(df)
+```
+This is the complte Summary of each column in dataset 'df'
+
+## Data Visualization
+### Checking Distribution in data
+### Histogram & Boxplot
+```{r}
+options(repr.plot.width = 16.0, repr.plot.height = 16.0)
+```
+
+```{r}
+library(ggplot2)
+a <- ggplot(df) + geom_histogram(aes(x=Age), 
+        fill = 'orange', col = 'black', 
+        bins = 30, position = 'dodge') +
+            labs(title = 'Age Histogram') + 
+            theme_classic()
+
+b <- ggplot(df) + geom_boxplot(aes(x= Age), 
+                    fill = 'purple') + 
+            labs(title = 'Age boxplot') + 
+            theme_classic()
+
+c <- ggplot(df) + 
+  geom_histogram(aes(x=StudyHoursPerWeek), 
+        fill = 'orange', col = 'black', 
+        bins = 30, position = 'dodge') +
+        labs(title = 'StudyHoursPerWeek Histogram') + 
+            theme_classic()
+d <- ggplot(df) + 
+  geom_boxplot(aes(x= StudyHoursPerWeek), 
+               fill = 'purple') + 
+         labs(title = 'StudyHoursPerWeek boxplot') + 
+            theme_classic()
+
+e <- ggplot(df) + 
+  geom_histogram(aes(x=AttendanceRate), 
+      fill = 'orange', col = 'black', 
+      bins = 30, position = 'dodge') +
+            labs(title = 'AttendanceRate Histogram') + 
+            theme_classic()
+
+f <- ggplot(df) + geom_boxplot(aes(x= AttendanceRate), 
+                               fill = 'purple') + 
+            labs(title = 'AttendanceRate boxplot') + 
+            theme_classic()
+
+g <- ggplot(df) + geom_histogram(aes(x=GPA), 
+        fill = 'orange', col = 'black', 
+        bins = 30, 
+    position = 'dodge') +labs(title = 'GPA Histogram') + 
+            theme_classic()
+
+h <- ggplot(df) + geom_boxplot(aes(x= GPA), 
+                               fill = 'purple') + 
+            labs(title = 'GPA boxplot') + 
+            theme_classic()
+```
+
+```{r}
+library(gridExtra)
+grid.arrange(a,b, ncol = 2)
+grid.arrange(c,d, ncol = 2)
+grid.arrange(e,f, ncol = 2)
+grid.arrange(g,h, ncol = 2)
+```
+
+### Count Plot
+```{r}
+options(repr.plot.width = 20.0, repr.plot.height = 16.0)
+
+```
+
+```{r}
+library(ggplot2)
+a <- ggplot(df) + geom_bar(aes(x= Gender , fill = Gender), 
+                           position = 'dodge') +
+    theme_classic() +
+    ggtitle('Gender Countplot') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=20),
+    axis.text.x = element_text(size = 20, hjust=1),
+    axis.text.y = element_text(size = 20),
+    title = element_text(size=15)
+    )
+
+b <- ggplot(df) + geom_bar(aes(x= Major , fill = Major), 
+                           position = 'dodge') +
+    theme_classic() +ggtitle('Major Countplot') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=20),
+    axis.text.x = element_text(size = 20, hjust=1),
+    axis.text.y = element_text(size = 20),
+    title = element_text(size=15)
+    )
+
+c <- ggplot(df) + geom_bar(aes(x= PartTimeJob , 
+                               fill = PartTimeJob), position = 'dodge') +
+    theme_classic() +
+    ggtitle('PartTimeJob Countplot') + 
+    theme(legend.position = 'none',
+    axis.title = element_text(size=20),
+    axis.text.x = element_text(size = 20, hjust=1),
+    axis.text.y = element_text(size = 20),
+    title = element_text(size=15)
+    )
+
+d <- ggplot(df) + geom_bar(aes(x= ExtraCurricularActivities , 
+                          fill = ExtraCurricularActivities), 
+                          position = 'dodge') +
+    theme_classic() +
+    ggtitle('ExtraCurricularActivities Countplot') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=20),
+    axis.text.x = element_text(size = 20, hjust=1),
+    axis.text.y = element_text(size = 20),
+    title = element_text(size=15)
+    )
+```
+
+```{r}
+library(gridExtra)
+grid.arrange(a, ncol = 2)
+grid.arrange(b, ncol = 2)
+grid.arrange(c, ncol = 2)
+grid.arrange(d, ncol = 2)
+```
+  
+## PLOTTING
+Plots are formed to see the relation between different variables.
+```{r}
+# Average GPA Rate by part-time job status
+options(repr.plot.width = 16.0, repr.plot.height = 16.0)
+```
+
+```{r}
+library(tidyverse)
+pt_ar <- df %>%
+            group_by(PartTimeJob) %>%
+            summarize(GPA = mean(GPA, na.rm=T))
+print(pt_ar)
+```
+It shows that the GPA of students is affected by part time job.
+```{r}
+library(ggplot2)
+ggplot(pt_ar) + geom_col(aes(x= GPA ,y = PartTimeJob , 
+                             fill = PartTimeJob )) +
+    geom_text(aes(x= GPA ,y = PartTimeJob , 
+                  label = GPA, hjust=0)) +
+    theme_classic() +
+    ggtitle('GPA rate by part-time job status') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=15)
+    )
+```
+
+```{r}
+# Average GPA Rate by Major
+library(tidyverse)
+major_ar <- df %>%
+            group_by(Major) %>%
+     summarize(GPA = mean(GPA, na.rm=T)) %>% 
+  arrange(desc(GPA))
+major_ar
+```
+It shows that students belonging to different Majors have different GPA .
+```{r}
+library(ggplot2)
+ggplot(major_ar) + geom_col(aes(x= GPA ,y = Major , 
+                                fill = Major )) +
+    geom_text(aes(x= GPA ,y = Major , label = GPA, 
+                  hjust=0)) +
+    theme_classic() +
+    ggtitle('GPA rate by Major') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=15)
+    )
+```
+
+```{r}
+# Average GPA by Extra curricular activities status
+options(repr.plot.width = 16.0, repr.plot.height = 16.0)
+```
+
+```{r}
+library(tidyverse)
+ec_ar <- df %>%
+            group_by(ExtraCurricularActivities) %>%
+            summarize(GPA = mean(GPA, na.rm=T))
+print(ec_ar)
+```
+It shows that GPA is affected by participation in Extracurricular activities.
+```{r}
+library(ggplot2)
+ggplot(ec_ar) + 
+  geom_col(aes(x= GPA ,y = ExtraCurricularActivities , 
+               fill = ExtraCurricularActivities )) +
+    geom_text(aes(x= GPA ,
+                  y = ExtraCurricularActivities , 
+                  label = GPA, hjust=0)) +
+    theme_classic() +
+    ggtitle('GPArate by Extracurricularactivities status') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=15)
+    )
+```
+
+```{r}
+# Average AttendenceRate Rate by part-time job status
+options(repr.plot.width = 16.0, repr.plot.height = 16.0)
+```
+
+
+```{r}
+library(tidyverse)
+pt_ar <- df %>%
+            group_by(PartTimeJob) %>%
+            summarize(AttendanceRate = mean(AttendanceRate, 
+                                            na.rm=T))
+print(pt_ar)
+```
+It shows that Rate of Attendence is affected by Part time job.
+```{r}
+library(ggplot2)
+ggplot(pt_ar) + geom_col(aes(x= AttendanceRate ,
+                             y = PartTimeJob , 
+                             fill = PartTimeJob )) +
+    geom_text(aes(x= AttendanceRate ,
+                  y = PartTimeJob , 
+                  label = AttendanceRate, hjust=0)) +
+    theme_classic() +
+   ggtitle('Average AttendenceRate by parttime job status') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=10)
+    )
+```
+
+```{r}
+# Average GPA Rate by Major
+library(tidyverse)
+major_ar <- df %>%
+            group_by(Major) %>%
+     summarize(AttendanceRate = mean(AttendanceRate, na.rm=T)) %>% 
+  arrange(desc(AttendanceRate))
+major_ar
+```
+Attendance of different majors is different.
+```{r}
+library(ggplot2)
+ggplot(major_ar) + geom_col(aes(x= AttendanceRate ,
+                y = Major , fill = Major )) +
+    geom_text(aes(x= AttendanceRate ,y = Major , 
+                  label = AttendanceRate, hjust=0)) +
+    theme_classic() +
+    ggtitle('Average Attendance rate by Major') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=15)
+    )
+```
+
+```{r}
+# Average Attendence rate by Extra curricular activities status
+library(tidyverse)
+ec_ar <- df %>%
+            group_by(ExtraCurricularActivities) %>%
+            summarize(AttendanceRate = mean(AttendanceRate, 
+                                            na.rm=T))
+print(ec_ar)
+```
+Extracurricular activities do have impact on Attendance of students.
+```{r}
+library(ggplot2)
+ggplot(ec_ar) + geom_col(aes(x= AttendanceRate ,y = ExtraCurricularActivities , 
+            fill = ExtraCurricularActivities )) +
+    geom_text(aes(x= AttendanceRate ,
+            y = ExtraCurricularActivities , 
+            label = AttendanceRate, hjust=0)) +
+    theme_classic() +
+    ggtitle('Attendance rate by 
+            Extra-curricular activities status') + 
+    theme(
+    legend.position = 'none',
+    axis.title = element_text(size=10),
+    axis.text.x = element_text(size = 10, hjust=1),
+    axis.text.y = element_text(size = 10),
+    title = element_text(size=10)
+    )
+```
+## Normality Check
+```{r}
+# QQ-Norm plot of numeric variables
+qqnorm(df$AttendanceRate)
+qqnorm(df$GPA)
+qqnorm(df$StudyHoursPerWeek)
+```
+According to the results of qqnorm plots, the data in columns(AttendanceRate, GPA, StudyHourPerWeek) is not normal.
+To normalize the data, I apply log transform, square root methods to these columns.
+# Inferential Statistics
+## Normality Test
+```{r}
+# Shapiro-Wilk test 
+shapiro.test(df$AttendanceRate)
+shapiro.test(df$GPA)
+shapiro.test(df$StudyHoursPerWeek)
+```
+## Checking Composition
+Using "Levene test", we can check the composition of data.
+```{r}
+library(car)
+leveneTest(df$GPA~df$PartTimeJob, data = df)
+leveneTest(df$GPA~df$ExtraCurricularActivities, data = df)
+```
+From the Levenes test p-value results, The Extracurricular activities data is homogenous.
+
+## Checking Correlation
+```{r}
+num_cols <- {}
+
+for(i in 1:length(df)){
+    if(is.numeric(df[[i]]) == TRUE)
+        num_cols <- c(num_cols ,colnames(df[i]))
+}
+```
+
+```{r}
+# Correlation matrix Visualization
+library(ggcorrplot)
+ggcorrplot(cor(df[num_cols]) , type = "lower", lab=T, title = 'Correlation')
+```
+## Methods applied to normalize data
+```{r}
+# Log transformation
+df$GPA_log <- log(df$GPA)
+# Adding 1 to avoid log(0)
+df$StudyHoursPerWeek_log <- log(df$StudyHoursPerWeek + 1)  
+df$AttendanceRate_log <- log(df$AttendanceRate + 1)
+
+# Square root transformation
+df$GPA_sqrt <- sqrt(df$GPA)
+df$StudyHoursPerWeek_sqrt <- sqrt(df$StudyHoursPerWeek)
+df$AttendanceRate_sqrt <- sqrt(df$AttendanceRate)
+
+```
+
+```{r}
+# Check for normality of transformed data using histograms
+hist(df$GPA_log, main="Log-Transformed GPA", xlab="GPA", col="darkblue")
+hist(df$GPA_sqrt, main="Sqrt-Transformed GPA", xlab="GPA", 
+     col="blue")
+```
+
+```{r}
+# Shapiro-Wilk test for transformed data
+shapiro.test(df$GPA_log)
+shapiro.test(df$GPA_sqrt)
+```
+From above mentioned results, It is seen that data is not normalized to greater extent. So, I may proceed analysis with non-Parametric tests.
+## Hypothesis Testing
+### Possible Hypotheses for Data
+I have made multiple hypotheses for this dataset and testing is done accordingly.
+1. Gender and GPA: There is a difference in GPA between male and female students.
+2. Study Hours and GPA: Students who study more hours per week have a higher GPA.
+3. Attendance and GPA: Higher attendance rates correlate with higher GPAs.
+4. Part-Time Job and GPA: Students with a part-time job have lower GPAs compared to those without.
+5. Extracurricular Activities and GPA: Participation in extracurricular activities influences GPA.
+6. Major and GPA: There is a difference in GPA among students of different majors.
+7. Age and GPA: Age has an effect on GPA.
+
+# Hypothesis Testing
+
+## T-test 
+
+1. Gender and GPA:
+```{r}
+df %>% group_by(Gender) %>% summarise(avg=mean(GPA)) %>% arrange(avg)
+```
+
+
+Test:   Wilcoxon rank-sum test.
+```{r}
+wilcox.test(GPA ~ Gender, data = df)
+t.test(GPA ~ Gender, data = df)
+```
+From the T-test results, null hypothesis is accepted. 
+The Female students have secured higher GPA than Male students.
+
+2.Study Hours and GPA:
+
+```{r}
+scatterplot(df$StudyHoursPerWeek, df$GPA)
+```
+
+```{r}
+# Pearson correlation
+cor.test(df$StudyHoursPerWeek, df$GPA, method = "pearson")
+
+# Spearman's rank correlation
+cor.test(df$StudyHoursPerWeek, df$GPA, method = "spearman")
+```
+From the spearman correlation test result, null hypothesis is rejected. The GPA of students not only dependent on study hours per week but dependent on other factors also.
+
+3. Attendance and GPA:
+```{r}
+scatterplot(df$GPA, df$AttendanceRate)
+```
+
+```{r}
+# Pearson correlation
+cor.test(df$AttendanceRate_sqrt, df$GPA, method = "pearson")
+
+# Pearson correlation
+cor.test(df$AttendanceRate_log, df$GPA, method = "pearson")
+
+# Spearman's rank correlation
+cor.test(df$AttendanceRate, df$GPA, method = "spearman")
+```
+From the results of Spearman's rank test, null hypothesis is accepted.
+The students who attended the classes regularly and maintained required Attendance rate, have secured high GPA.
+
+
+4. Part-Time Job and GPA:
+```{r}
+# Independent t-test
+t.test(GPA_log ~ PartTimeJob, data = df)
+t.test(df$GPA_sqrt ~ PartTimeJob, data = df)
+# Wilcoxon rank-sum test (if data is not normally distributed)
+wilcox.test(GPA ~ PartTimeJob, data = df)
+```
+Null Hypothesis is accepted
+The students who do part time job have low GPA.
+
+
+5. Extracurricular Activities and GPA:
+```{r}
+# Independent t-test
+t.test(GPA_log ~ ExtraCurricularActivities, data = df)
+t.test(GPA_sqrt ~ ExtraCurricularActivities, data = df)
+# Wilcoxon rank-sum test (if data is not normally distributed)
+wilcox.test(GPA ~ ExtraCurricularActivities, data = df)
+```
+Null hypothesis is accepted
+The students who participated in ExtraCurricular Activities have positive effect on their GPA.
+
+6. Major and GPA:
+```{r}
+df %>% group_by(Major) %>% summarise(avg=mean(GPA)) %>% arrange(avg)
+```
+
+
+```{r}
+# ANOVA
+aov_result <- aov(GPA_log ~ Major, data = df)
+summary(aov_result)
+aov_result <- aov(GPA_sqrt ~ Major, data = df)
+summary(aov_result)
+# Kruskal-Wallis test ( data is not normally distributed)
+kruskal.test(GPA ~ Major, data = df)
+```
+The students of different Major have different GPAs.
+
+# Modeling
+```{r}
+library(tidymodels)
+library(finetune)
+library(xgboost)
+library(mltools)
+library(themis)
+library(caret)
+library(bonsai)
+library(withr)
+library(Metrics)
+library(data.table)
+```
+
+## Preprocessing
+```{r}
+df <- df[,-1]
+```
+
+```{r}
+df$Gender <- ifelse(df$Gender == 'Male',1,0)
+df$Major <- as.factor(df$Major)
+df$PartTimeJob <- ifelse(df$PartTimeJob == 'Yes',1,0)
+df$ExtraCurricularActivities <- ifelse(df$ExtraCurricularActivities == 'Yes','1','0')
+```
+
+```{r}
+encoding_data <- one_hot(as.data.table(df[,-12]))
+encoding_data$ExtraCurricularActivities <- as.factor(df$ExtraCurricularActivities)
+```
+
+### Hypothesis structured for model
+ExtraCurricularActivities have impact on student performance and Attendence rate.
+
+## Train Test Split
+```{r}
+idx <- sample(1:nrow(df), 0.7 * nrow(encoding_data))
+train <- encoding_data[idx,]
+test <- encoding_data[-idx,]
+```
+## Simple XGB Model
+```{r}
+xgb_rec <-
+  recipe(ExtraCurricularActivities ~ ., data = train) %>% 
+      step_dummy(all_nominal_predictors()) %>%
+      step_YeoJohnson(all_numeric_predictors())
+```
+
+```{r}
+xgb_spec <- boost_tree() %>%
+  set_engine('xgboost' ,
+             nthread  = future::availableCores()) %>%
+  set_mode('classification')
+```
+
+```{r}
+xgb_wf <- workflow() %>%
+  add_recipe(xgb_rec) %>%
+  add_model(xgb_spec)
+
+xgb_wf
+```
+
+```{r}
+model_xgb =
+  xgb_wf %>% 
+  fit(train) %>%
+  with_seed(7, .)
+```
+
+```{r}
+model_xgb
+```
+
+```{r}
+pred_xgb <- predict(model_xgb, test)
+```
+
+```{r}
+cm_xgb <- confusionMatrix(pred_xgb$.pred_class, test$ExtraCurricularActivities)
+cm_xgb
+```
+# Conclusion 
+
+
